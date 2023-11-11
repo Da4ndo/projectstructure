@@ -1,0 +1,10 @@
+[project]
+name = "Default Project Name"
+version = "1.0.0"
+description = "Default Project Description"
+tags = ["project", "folder"]
+
+[structure]
+"." = ["config.rs", "save.rs", "main.rs", "update.rs", "scan.rs", "projectstructure.toml"]
+"src/asd2" = ["asd2.py"]
+"src/asd2/asd3" = []
