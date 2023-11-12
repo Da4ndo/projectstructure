@@ -2,6 +2,7 @@ use colored::*;
 use indicatif::{ProgressBar, ProgressStyle};
 use serde_derive::{Deserialize, Serialize};
 use std::path::Path;
+use std::time::Instant;
 use structopt::StructOpt;
 use tokio::fs;
 
@@ -46,6 +47,18 @@ enum Opt {
             about = "Path to the project directory."
         )]
         path: String,
+        #[structopt(
+            short = "v",
+            long = "verbose",
+            about = "Prints out more detailed timing information."
+        )]
+        verbose: bool,
+        #[structopt(
+            short = "f",
+            long = "force",
+            about = "Force initialization even if a projectstructure.toml file already exists."
+        )]
+        force: bool,
     },
     #[structopt(about = "Updates an existing project structure.")]
     Update {
@@ -56,6 +69,12 @@ enum Opt {
             about = "Path to the project directory."
         )]
         path: String,
+        #[structopt(
+            short = "v",
+            long = "verbose",
+            about = "Prints out more detailed timing information."
+        )]
+        verbose: bool,
     },
 }
 
@@ -69,15 +88,21 @@ async fn load_ignore_file(path: &str) -> Result<Vec<String>, Box<dyn std::error:
     Ok(ignore_list)
 }
 
-async fn init(path: String) -> Result<(), Box<dyn std::error::Error>> {
-    let path = fs::canonicalize(path).await?.to_str().ok_or("Error converting path to absolute path. Invalid UTF-8 sequence.")?.to_string();
+async fn init(path: String, verbose: bool, force: bool) -> Result<(), Box<dyn std::error::Error>> {
+    let start_time = Instant::now(); // Start timing
+
+    let path = fs::canonicalize(path)
+        .await?
+        .to_str()
+        .ok_or("Error converting path to absolute path. Invalid UTF-8 sequence.")?
+        .to_string();
     let project_structure_path = format!("{}/projectstructure.toml", path);
-    if Path::new(&project_structure_path).exists() {
+    if Path::new(&project_structure_path).exists() && !force {
         println!("A projectstructure.toml file already exists in this path. Please use the update command instead.");
         return Ok(());
     }
 
-    println!("Initializing a new project structure...");
+    println!("{} a new project structure...", "Initializing".blue());
     let pb = ProgressBar::new(100);
     pb.set_style(
         ProgressStyle::default_bar()
@@ -101,12 +126,14 @@ async fn init(path: String) -> Result<(), Box<dyn std::error::Error>> {
     pb.inc(10);
 
     pb.set_message("Scanning directory...");
+    let scan_start_time = Instant::now(); // Start timing for scanning
     let absolute_path = fs::canonicalize(&path).await?;
     if let Err(e) = std::env::set_current_dir(&absolute_path) {
         println!("Error changing directory: {:?}", e);
         return Err(Box::new(e));
     }
     let project_structure = scan::scan_directory(".".to_string(), Some(ignore_list)).await?;
+    let scan_duration = scan_start_time.elapsed(); // End timing for scanning
     pb.inc(70);
 
     pb.set_message("Creating project structure...");
@@ -128,22 +155,37 @@ async fn init(path: String) -> Result<(), Box<dyn std::error::Error>> {
     save::save_project_structure(project, structure, path).await?;
     pb.finish_and_clear();
 
+    let total_duration = start_time.elapsed(); // End timing
+
+    if verbose {
+        println!("{} in {:.9}s. (Scanning: {:.9}s)", "Finished".green(), total_duration.as_secs_f64(), scan_duration.as_secs_f64());
+    } else {
+        println!("{} in {:.3}s. (Scanning: {:.3}s)", "Finished".green(), total_duration.as_secs_f64(), scan_duration.as_secs_f64());
+    }
+
     println!(
-        "Project structure saved to {}",
+        "{} structure saved to {}",
+        "Project".purple(),
         "projectstructure.toml".yellow()
     );
 
     Ok(())
 }
 
-async fn update(path: String) -> Result<(), Box<dyn std::error::Error>> {
-    let path = fs::canonicalize(path).await?.to_str().ok_or("Error converting path to absolute path. Invalid UTF-8 sequence.")?.to_string();
+async fn update(path: String, verbose: bool) -> Result<(), Box<dyn std::error::Error>> {
+    let start_time = Instant::now(); // Start timing
+
+    let path = fs::canonicalize(path)
+        .await?
+        .to_str()
+        .ok_or("Error converting path to absolute path. Invalid UTF-8 sequence.")?
+        .to_string();
     let project_structure_path = format!("{}/projectstructure.toml", path);
     if !Path::new(&project_structure_path).exists() {
-        return init(path.clone()).await;
+        return init(path.clone(), verbose, false).await;
     }
 
-    println!("Updating an existing project structure...");
+    println!("{} an existing project structure...", "Updating".blue());
 
     let pb = ProgressBar::new(100);
     pb.set_style(
@@ -164,12 +206,14 @@ async fn update(path: String) -> Result<(), Box<dyn std::error::Error>> {
     pb.inc(5);
 
     pb.set_message("Scanning directory...");
+    let scan_start_time = Instant::now(); // Start timing for scanning
     let absolute_path = fs::canonicalize(&path).await?;
     if let Err(e) = std::env::set_current_dir(&absolute_path) {
         println!("Error changing directory: {:?}", e);
         return Err(Box::new(e));
     }
     let project_structure = scan::scan_directory(".".to_string(), Some(ignore_list)).await?;
+    let scan_duration = scan_start_time.elapsed(); // End timing for scanning
     pb.inc(70);
 
     pb.set_message("Creating project structure...");
@@ -184,8 +228,17 @@ async fn update(path: String) -> Result<(), Box<dyn std::error::Error>> {
     update::update_project_structure(structure, path).await?;
     pb.finish_and_clear();
 
+    let total_duration = start_time.elapsed(); // End timing
+
+    if verbose {
+        println!("{} in {:.9}s. (Scanning: {:.9}s)", "Finished".green(), total_duration.as_secs_f64(), scan_duration.as_secs_f64());
+    } else {
+        println!("{} in {:.3}s. (Scanning: {:.3}s)", "Finished".green(), total_duration.as_secs_f64(), scan_duration.as_secs_f64());
+    }
+
     println!(
-        "Project structure saved to {}",
+        "{} structure saved to {}",
+        "Project".purple(),
         "projectstructure.toml".yellow()
     );
     Ok(())
@@ -196,13 +249,34 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let opt = Opt::from_args();
 
     match opt {
-        Opt::Init { path } => {
-            init(path).await?;
+        Opt::Init { path, verbose, force } => {
+            init(path, verbose, force).await?;
         }
-        Opt::Update { path } => {
-            update(path).await?;
+        Opt::Update { path, verbose } => {
+            update(path, verbose).await?;
         }
     }
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+
+    #[tokio::test]
+    async fn init() {
+        let path = "test".to_string();
+        let verbose = true;
+        let force = true;
+        let result = crate::init(path, verbose, force).await;
+        assert!(result.is_ok());
+    }
+
+    #[tokio::test]
+    async fn update() {
+        let path = "test".to_string();
+        let verbose = true;
+        let result = crate::update(path, verbose).await;
+        assert!(result.is_ok());
+    }
 }
