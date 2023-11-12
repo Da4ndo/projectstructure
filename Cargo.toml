@@ -1,6 +1,6 @@
 [package]
 name = "projectstructure"
-version = "1.0.0"
+version = "0.1.15"
 authors = ["Da4ndo <contact@da4ndo.com>"]
 edition = "2021"
 description = "A Rust app that scans a project folder and saves its structure in a .toml file."
