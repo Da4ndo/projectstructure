@@ -12,7 +12,9 @@ You can click on the star (⭐️) button above this repository if you liked thi
 
 ## Features
 
-- Auto name, description, version fill from Cargo.toml, package.json or similar.
+- Rapid Scanning Capabilities
+- Auto-fill Details
+- .projectstructureignore Support
 
 ## Flags
 ```
