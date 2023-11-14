@@ -35,7 +35,7 @@ wget https://cdn.da4ndo.com/projectstructure/setup.sh | sh
 
 OR
 
-wget https://raw.githubusercontent.com/Da4ndo/main/projectstructure/setup.sh | sh
+wget https://raw.githubusercontent.com/Da4ndo/projectstructure/main/setup.sh | sh
 ```
 Alternatively, you can clone the repository and build the project using `cargo build`, then use `install.sh`. 
 
