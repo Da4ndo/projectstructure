@@ -1,0 +1,22 @@
+[package]
+name = "test_project"
+version = "0.1.0"
+authors = ["Test Author <test.author@example.com>"]
+edition = "2021"
+description = "A test project for code editing."
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+serde = "1.0"
+serde_derive = "1.0"
+toml = "0.8.8"
+structopt = "0.3.26"
+futures = "0.3.29"
+indicatif = "0.17.7"
+serde_json = "1.0.108"
+regex = "1.10.2"
+colored = "2.0.4"
+
+[[bin]]
+name = "test_project"
+path = "src/main.rs"
