@@ -31,15 +31,16 @@ You can click on the star (⭐️) button above this repository if you liked thi
 ## Getting Started
 
 ## Installation
+
 You can install ProjectStructure by running the following command: 
 ```bash
 wget https://cdn.da4ndo.com/projectstructure/setup.sh | sh
-
+```
 OR
-
+```bash
 wget https://raw.githubusercontent.com/Da4ndo/projectstructure/main/setup.sh | sh
 ```
-Alternatively, you can clone the repository and build the project using `cargo build`, then use `install.sh`. 
+Alternatively, you can clone the repository and build the project using `cargo build`, then use [`install.sh`](https://github.com/Da4ndo/projectstructure/blob/main/install.sh). 
 
 > The installation creates a folder `~/.da4ndo/`.
 
@@ -49,7 +50,7 @@ ProjectStructure is a highly efficient tool that leverages the power of Tokio's 
 
 The application also recognizes a `.projectstructureignore` file, which you can use to specify files and directories that should be ignored during the scanning process. However, the presence of this file is not mandatory, and the application will function normally without it.
 
-# License
+## License
 
 This project is licensed under the MIT License. See the **LICENSE** file for details.
 
