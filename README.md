@@ -10,27 +10,27 @@ Project made with ❤ by Da4ndo.
 
 You can click on the star (⭐️) button above this repository if you liked this project! Thank you all. 🙏
 
-## Features
+## 🚀 Features
 
 - Rapid Scanning Capabilities
 - Auto-fill Details
 - .projectstructureignore Support
 
-## Flags
+## 📜 Flags
 ```
     -h, --help       Prints help information
     -V, --version    Prints version information
 ```
-## Subcommands
+## 📚 Subcommands
 ```
     help      Prints this message or the help of the given subcommand(s)
     init      Initializes a new project structure.
     update    Updates an existing project structure.
 ```
 
-## Getting Started
+## 🛠️ Getting Started
 
-## Installation
+## 🔧 Installation
 
 You can install ProjectStructure by running the following command: 
 ```bash
@@ -44,15 +44,15 @@ Alternatively, you can clone the repository and build the project using `cargo b
 
 > The installation creates a folder `~/.da4ndo/`.
 
-## Documentation
+## 📖 Documentation
 
 ProjectStructure is a highly efficient tool that leverages the power of Tokio's multi-threading to swiftly traverse through your project's directories, subdirectories, and files. It's designed to automatically extract and set the name, description, and version of your project from files like `Cargo.toml`, `package.json`, or similar. In case it fails to find these details, it will resort to default values.
 
 The application also recognizes a `.projectstructureignore` file, which you can use to specify files and directories that should be ignored during the scanning process. However, the presence of this file is not mandatory, and the application will function normally without it.
 
-## License
+## 📝 License
 
 This project is licensed under the MIT License. See the **LICENSE** file for details.
 
-## Contributing
+## 🤝 Contributing
 Contributions are welcome. Feel free to fix problems, report bugs, or propose new features. 
