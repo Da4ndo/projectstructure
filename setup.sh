@@ -33,19 +33,19 @@ pre_setup() {
     if [[ ":$PATH:" != *":$HOME/.da4ndo/bin:"* ]] || { ! grep -q '. "$HOME/.da4ndo/env"' ~/.bashrc && ! grep -q '. "$HOME/.da4ndo/env"' ~/.zshrc; }; then
         # Check if .bashrc exists
         if [ -f ~/.bashrc ]; then
-            echo -ne "\033[0;35mAdding\033[0m '. "\$HOME/.da4ndo/env"' to ~/.bashrc...\033[0m\r"
-
-            echo '. "$HOME/.da4ndo/env"' >>~/.bashrc
-
-            echo -e "\033[0;32mAdded\033[0m '. "\$HOME/.da4ndo/env"' to ~/.bashrc.     \033[0m"
+            if ! grep -q '. "$HOME/.da4ndo/env"' ~/.bashrc; then
+                echo -ne "\033[0;35mAdding\033[0m '. "\$HOME/.da4ndo/env"' to ~/.bashrc...\033[0m\r"
+                echo -e '\n. "$HOME/.da4ndo/env"' >> ~/.bashrc
+                echo -e "\033[0;32mAdded\033[0m '. "\$HOME/.da4ndo/env"' to ~/.bashrc.     \033[0m"
+            fi
         fi
-        # Check if .zshrc exists
+        # Check if .zshrc exists and does not already contain the env source line
         if [ -f ~/.zshrc ]; then
-            echo -ne "\033[0;35mAdding\033[0m '. "\$HOME/.da4ndo/env"' to ~/.zshrc...\033[0m\r"
-
-            echo '. "$HOME/.da4ndo/env"' >>~/.zshrc
-
-            echo -e "\033[0;32mAdded\033[0m '. "\$HOME/.da4ndo/env" to ~/.zshrc.        \033[0m"
+            if ! grep -q '. "$HOME/.da4ndo/env"' ~/.zshrc; then
+                echo -ne "\033[0;35mAdding\033[0m '. "\$HOME/.da4ndo/env"' to ~/.zshrc...\033[0m\r"
+                echo -e '\n. "$HOME/.da4ndo/env"' >> ~/.zshrc
+                echo -e "\033[0;32mAdded\033[0m '. "\$HOME/.da4ndo/env" to ~/.zshrc.        \033[0m"
+            fi
         fi
         echo -e "\033[0;32mAdded\033[0m \$HOME/.da4ndo/bin to PATH.     \033[0m"
     fi
@@ -105,6 +105,7 @@ setup() {
         fi
     else
         echo -e "\033[0;35mProjectstructure is not installed.\033[0m"
+        mkdir -p ~/.da4ndo/bin/
         if ! mv projectstructure_new ~/.da4ndo/bin/projectstructure; then
             echo -e "\033[0;31mFailed to install projectstructure. Please check your permissions and try again.\033[0m"
             exit 1
