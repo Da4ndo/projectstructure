@@ -34,11 +34,11 @@ You can click on the star (⭐️) button above this repository if you liked thi
 
 You can install ProjectStructure by running the following command: 
 ```bash
-wget https://cdn.da4ndo.com/projectstructure/setup.sh | sh
+curl https://cdn.da4ndo.com/projectstructure/setup.sh | sh
 ```
 OR
 ```bash
-wget https://raw.githubusercontent.com/Da4ndo/projectstructure/main/setup.sh | sh
+curl https://raw.githubusercontent.com/Da4ndo/projectstructure/main/setup.sh | sh
 ```
 Alternatively, you can clone the repository and build the project using `cargo build`, then use [`install.sh`](https://github.com/Da4ndo/projectstructure/blob/main/install.sh). 
 
